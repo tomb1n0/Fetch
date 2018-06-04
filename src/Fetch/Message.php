@@ -50,6 +50,13 @@ class Message
     protected $rawHeaders;
 
     /**
+     * This as an string which contains raw header information for the message.
+     *
+     * @var string
+     */
+    protected $rawEmail;
+
+    /**
      * This as an object which contains header information for the message.
      *
      * @var \stdClass
@@ -314,6 +321,21 @@ class Message
         }
 
         return $this->rawHeaders;
+    }
+
+    /**
+     * This function returns a string containing the full raw message.
+     * Useful for storing the full email as a blob in a db etc.
+     *
+     * @param  bool   $forceReload
+     * @return string
+     */
+    public function getRawEmail($forceReload = false) {
+        if ($forceReload || !isset($this->rawEmail)) {
+            $this->rawEmail = imap_fetchbody($this->imapStream, $this->uid, "", FT_UID);
+        }
+
+        return $this->rawEmail;
     }
 
     /**
